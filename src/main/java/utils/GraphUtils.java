@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GraphUtils {
-    public Integer calculateSumForVertex(Graph graph, Integer vertexNum) throws Exception {
+    private Integer calculateSumForVertex(Graph graph, Integer vertexNum) throws Exception {
         List<Vertex> vertexFoundByNum = graph.getVertices()
                 .stream()
                 .filter(vertex -> vertex.getNum().equals(vertexNum))
@@ -29,7 +29,7 @@ public class GraphUtils {
         return sum;
     }
 
-    private  boolean checkGraphIsMagic(Graph graph) throws Exception {
+    private boolean checkGraphIsMagic(Graph graph) throws Exception {
         Integer commonSum = calculateSumForVertex(graph, 0);
         Double avgValue = (graph.getVertices().size() - 1) / 2.0;
         if (commonSum < avgValue) {
@@ -42,7 +42,7 @@ public class GraphUtils {
         return true;
     }
 
-    public Graph generateNextEdgePermutation(Graph graph, PermutationIterator<Integer> iterator) {
+    private Graph generateNextEdgePermutation(Graph graph, PermutationIterator<Integer> iterator) {
         List<Integer> initialPermutation = iterator.next();
         for (int i = 0; i < initialPermutation.size(); i++) {
             graph.getEdges().get(i).setWeight(initialPermutation.get(i));
@@ -59,12 +59,12 @@ public class GraphUtils {
             initialPermutation.add(i + 1);
         }
         PermutationIterator<Integer> iterator = new PermutationIterator<>(initialPermutation);
-        int count = 0;
+//        int count = 0;
         while (iterator.hasNext() && !isMagic) {
             graph = generateNextEdgePermutation(graph, iterator);
-            count++;
-            if (count > Integer.MAX_VALUE)
-                return new ResearchResult(false, graph.getEdges());
+//            count++;
+//            if (count > Integer.MAX_VALUE)
+//                return new ResearchResult(false, graph.getEdges());
             isMagic = checkGraphIsMagic(graph);
         }
         return new ResearchResult(isMagic, graph.getEdges());
