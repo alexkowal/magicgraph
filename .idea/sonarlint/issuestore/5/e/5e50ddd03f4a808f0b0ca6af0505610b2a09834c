@@ -1,0 +1,10 @@
+
+V
+squid:S1060"9Replace this use of System.out or System.err by a logger.(ÌÇŸ8²Í½²›.
+Fsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8²Í½²›.
+osquid:S2259%"LA "NullPointerException" could be thrown; "researchResult" is nullable here.(óÖ–™ûÿÿÿÿ8²Í½²›.
+Msquid:S5411%"*Use the primitive boolean expression here.(óÖ–™ûÿÿÿÿ8²Í½²›.
+Fsquid:S1148#"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8²Í½²›.
+Fsquid:S1148,"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8ßÊ˜³›.
+V
+squid:S106'"9Replace this use of System.out or System.err by a logger.(¤´µ8²Í½²›.
