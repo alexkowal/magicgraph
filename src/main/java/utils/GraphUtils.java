@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GraphUtils {
+
     private Integer calculateSumForVertex(Graph graph, Integer vertexNum) throws Exception {
         List<Vertex> vertexFoundByNum = graph.getVertices()
                 .stream()
@@ -31,8 +32,7 @@ public class GraphUtils {
 
     private boolean checkGraphIsMagic(Graph graph) throws Exception {
         Integer commonSum = calculateSumForVertex(graph, 0);
-        Double avgValue = (graph.getVertices().size() - 1) / 2.0;
-        if (commonSum < avgValue) {
+        if (!commonSum.equals(graph.getMagicNumber())) {
             return false;
         }
         for (Vertex v : graph.getVertices()) {
@@ -59,12 +59,8 @@ public class GraphUtils {
             initialPermutation.add(i + 1);
         }
         PermutationIterator<Integer> iterator = new PermutationIterator<>(initialPermutation);
-//        int count = 0;
         while (iterator.hasNext() && !isMagic) {
             graph = generateNextEdgePermutation(graph, iterator);
-//            count++;
-//            if (count > Integer.MAX_VALUE)
-//                return new ResearchResult(false, graph.getEdges());
             isMagic = checkGraphIsMagic(graph);
         }
         return new ResearchResult(isMagic, graph.getEdges());

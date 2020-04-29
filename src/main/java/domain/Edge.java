@@ -9,6 +9,7 @@ public class Edge {
     Integer v1;
     Integer v2;
     Integer weight;
+    boolean marked = false;
 
     @Override
     public String toString() {

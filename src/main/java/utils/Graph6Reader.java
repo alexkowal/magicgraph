@@ -13,7 +13,7 @@ public class Graph6Reader {
     private static final Integer STANDART_CHARACTER_REDUCER = 63;
 
     public static Graph readGraph6Format(String graphInGraph6Format) throws IOException {
-        Integer numberOfVertices = getNumberOfVerices(graphInGraph6Format);
+        Integer numberOfVertices = getVericesCount(graphInGraph6Format);
         List<Integer> chars = Lists.newArrayList();
         for (int i = 1; i < graphInGraph6Format.length(); i++) {
             chars.add(Integer.valueOf(graphInGraph6Format.charAt(i)) - 63);
@@ -30,7 +30,7 @@ public class Graph6Reader {
         for (int i = 0; i < numberOfVertices; i++) {
             for (int j = 0; j < i; j++) {
                 if (matrixInRow.charAt(pos) == '1') {
-                    edges.add(new Edge(i, j, edges.size() + 1));
+                    edges.add(new Edge(i, j, edges.size() + 1, false));
                 }
                 matrix[i][j] = matrixInRow.charAt(pos) == '1' ? 1 : 0;
                 pos++;
@@ -52,7 +52,7 @@ public class Graph6Reader {
 
     }
 
-    private static Integer getNumberOfVerices(String graphInGraph6Format) {
+    private static Integer getVericesCount(String graphInGraph6Format) {
         return graphInGraph6Format.charAt(0) - STANDART_CHARACTER_REDUCER;
     }
 
@@ -66,7 +66,8 @@ public class Graph6Reader {
     }
 
     private static Graph buildGraphFromVerticesAndEdges(List<Vertex> vertices, List<Edge> edges) {
-        Graph graph = new Graph(vertices, edges);
+        Integer magicNumber = getMagicNumber(vertices.size(),edges.size());
+        Graph graph = new Graph(vertices, edges, magicNumber);
         for (Edge e : edges) {
             vertices.stream()
                     .filter(vertex -> vertex.getNum().equals(e.getV1()) || vertex.getNum().equals(e.getV2()))
@@ -76,4 +77,8 @@ public class Graph6Reader {
         return graph;
     }
 
+
+    public static Integer getMagicNumber(int n , int m) {
+        return (m * (m + 1)) / n;
+    }
 }
