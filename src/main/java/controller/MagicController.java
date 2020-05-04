@@ -18,6 +18,6 @@ public class MagicController {
 
     @PostMapping("/start")
     public void discover(@RequestParam(value = "file") MultipartFile file) throws Exception {
-        magicPermutationFinder.readGraphsFromFile(file.getInputStream());
+        magicPermutationFinder.readGraphsFromFileV2(file.getInputStream());
     }
 }

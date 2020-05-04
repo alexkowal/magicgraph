@@ -3,6 +3,8 @@ package domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class Edge {
@@ -13,6 +15,6 @@ public class Edge {
 
     @Override
     public String toString() {
-        return "Edge:" + v1 + " -> "+ v2 + " : " + weight + "\n";
+        return "Edge:" + v1 + " -> " + v2 + " : " + weight + "\n";
     }
 }

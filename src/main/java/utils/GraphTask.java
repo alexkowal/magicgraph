@@ -1,48 +1,41 @@
-package starter;
+package utils;
 
-import domain.Edge;
+import com.google.common.collect.Lists;
 import domain.Graph;
 import domain.ResearchResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import utils.Graph6Reader;
-import utils.GraphUtils;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 
 @Data
-@Slf4j
 @AllArgsConstructor
-public class Task implements Runnable {
+public class GraphTask implements Runnable {
     private String graph6String;
     private JavaMailSender javaMailSender;
 
     @Override
     public void run() {
-        GraphUtils graphUtils = new GraphUtils();
         Graph graph1 = null;
         try {
             graph1 = Graph6Reader.readGraph6Format(graph6String);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ResearchResult researchResult = null;
+        List<Integer> possibleValues = Lists.newArrayList();
+        for (int i = 0; i < graph1.getEdges().size(); i++) {
+            possibleValues.add(i + 1);
+        }
+        System.out.println(graph6String);
         try {
-            researchResult = graphUtils.checkMagicPermutationExist(graph1);
+            boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues, new ResearchResult(false, Lists.newArrayList()));
+            if(found)
+                sendEmail("Graph found:", "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (researchResult.getResult()) {
-            Collections.sort(researchResult.getEdgeList(), Comparator.comparing(Edge::getV1));
-            log.info("Permutation for Graph found: " + graph6String + " " + researchResult.getEdgeList());
-//            sendEmail("Graph found:", "Permutation for Graph found: " + graph6String + " " + researchResult.getEdgeList());
-        } else {
-            log.info("Not found: " + graph6String);
         }
     }
 

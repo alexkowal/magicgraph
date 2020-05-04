@@ -1,4 +1,6 @@
 
-jsquid:S00112"FDefine and throw a dedicated exception instead of using a generic one.(‰–Ÿçıÿÿÿÿ8Å¿Ë›.
-isquid:CommentedOutCodeLineB"<This block of commented-out lines of code should be removed.(²î×8Ì×†³›.
-jsquid:S00112"FDefine and throw a dedicated exception instead of using a generic one.(ìÚ¿•øÿÿÿÿ8Å¿Ë›.
+jsquid:S00112"FDefine and throw a dedicated exception instead of using a generic one.(ìÚ¿•øÿÿÿÿ8Å¿Ë›.
+esquid:S00112"FDefine and throw a dedicated exception instead of using a generic one.(ÚÜò‡8Å¿Ë›.
+Osquid:S1612K",Replace this lambda with a method reference.(¢•ßÔøÿÿÿÿ8éñ™úœ.
+†squid:S4165A"cRemove this useless assignment; "graph" already holds the assigned value along all execution paths.(›§ş’úÿÿÿÿ8±‹²»›.
+Qsquid:UnusedPrivateMethodG"&Remove this unused private "v" method.(ªƒØ/8éñ™úœ.

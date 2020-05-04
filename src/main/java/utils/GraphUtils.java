@@ -1,11 +1,13 @@
 package utils;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import domain.Edge;
 import domain.Graph;
 import domain.ResearchResult;
 import domain.Vertex;
 import org.apache.commons.collections4.iterators.PermutationIterator;
+import org.paukov.combinatorics3.Generator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,5 +68,16 @@ public class GraphUtils {
         return new ResearchResult(isMagic, graph.getEdges());
     }
 
+    private void v() {
+        Generator.partition(55)
+                .stream()
+                .filter(integers -> integers.size() == 4)
+                .filter(integers -> checkValuesUnique(integers))
+                .collect(Collectors.toList());
+    }
+
+    private static boolean checkValuesUnique(List<Integer> v) {
+        return v.size() == Sets.newHashSet(v).size();
+    }
 
 }

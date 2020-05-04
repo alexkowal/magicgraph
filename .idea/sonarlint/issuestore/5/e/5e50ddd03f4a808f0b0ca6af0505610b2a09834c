@@ -1,10 +1,9 @@
 
-V
-squid:S1060"9Replace this use of System.out or System.err by a logger.(ÌÇŸ8²Í½²›.
-Fsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8²Í½²›.
-osquid:S2259%"LA "NullPointerException" could be thrown; "researchResult" is nullable here.(óÖ–™ûÿÿÿÿ8²Í½²›.
-Msquid:S5411%"*Use the primitive boolean expression here.(óÖ–™ûÿÿÿÿ8²Í½²›.
-Fsquid:S1148#"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8²Í½²›.
-Fsquid:S1148,"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8ßÊ˜³›.
-V
-squid:S106'"9Replace this use of System.out or System.err by a logger.(¤´µ8²Í½²›.
+Msquid:S5411*"*Use the primitive boolean expression here.(óÖ–™ûÿÿÿÿ8åô×¸›.
+_squid:UnusedPrivateMethod3".Remove this unused private "sendEmail" method.(Ñåñéùÿÿÿÿ8Á’å¸œ.
+Fsquid:S1148("#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8²Í½²›.
+nsquid:CommentedOutCodeLine-"<This block of commented-out lines of code should be removed.(×¸“Ñÿÿÿÿÿ8Á’å¸œ.
+]squid:UselessImportCheck"3Remove this unused import 'java.io.BufferedWriter'.(¬õº/8ùıä¸œ.
+Fsquid:S1148""#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8²Í½²›.
+_squid:UselessImportCheck"/Remove this unused import 'java.io.FileWriter'.(Ã‘ÅÃıÿÿÿÿ8ùıä¸œ.
+osquid:S2259*"LA "NullPointerException" could be thrown; "researchResult" is nullable here.(óÖ–™ûÿÿÿÿ8²Í½²›.

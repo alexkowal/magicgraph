@@ -6,6 +6,8 @@ import domain.Graph;
 import domain.Vertex;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +25,7 @@ public class Graph6Reader {
 
         List<Vertex> vertices = Lists.newArrayList();
         for (int i = 0; i < numberOfVertices; i++) {
-            vertices.add(new Vertex(i, Lists.newArrayList()));
+            vertices.add(new Vertex(i, Lists.newArrayList(), Lists.newArrayList()));
         }
         List<Edge> edges = Lists.newArrayList();
         int pos = 0;
@@ -37,7 +39,7 @@ public class Graph6Reader {
             }
         }
 
-        return buildGraphFromVerticesAndEdges(vertices, edges);
+        return buildGraphFromVerticesAndEdges(vertices, edges, graphInGraph6Format);
     }
 
     private static StringBuilder ToBin(int a) {
@@ -65,20 +67,27 @@ public class Graph6Reader {
         return String.valueOf(matrixInRow);
     }
 
-    private static Graph buildGraphFromVerticesAndEdges(List<Vertex> vertices, List<Edge> edges) {
-        Integer magicNumber = getMagicNumber(vertices.size(),edges.size());
-        Graph graph = new Graph(vertices, edges, magicNumber);
+    private static Graph buildGraphFromVerticesAndEdges(List<Vertex> vertices, List<Edge> edges, String graphInGraph6Format) {
+        Integer magicNumber = getMagicNumber(vertices.size(), edges.size());
+        Graph graph = new Graph(vertices, edges, magicNumber, graphInGraph6Format);
         for (Edge e : edges) {
+            e.setWeight(0);
             vertices.stream()
                     .filter(vertex -> vertex.getNum().equals(e.getV1()) || vertex.getNum().equals(e.getV2()))
                     .collect(Collectors.toList())
                     .forEach(vertex -> vertex.getEdges().add(e));
         }
+        sortGraphByEdgesCount(graph);
         return graph;
     }
 
 
-    public static Integer getMagicNumber(int n , int m) {
+    private static void sortGraphByEdgesCount(Graph graph) {
+        List<Vertex> vertices = graph.getVertices();
+        Collections.sort(vertices, (o1, o2) -> o1.getEdges().size() > o2.getEdges().size() ? 1 : -1);
+    }
+
+    public static Integer getMagicNumber(int n, int m) {
         return (m * (m + 1)) / n;
     }
 }
