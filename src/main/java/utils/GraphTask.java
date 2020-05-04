@@ -31,9 +31,11 @@ public class GraphTask implements Runnable {
         }
         System.out.println(graph6String);
         try {
-            boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues, new ResearchResult(false, Lists.newArrayList()));
+            Long i = new Long(0);
+            boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
+                    new ResearchResult(false, Lists.newArrayList()), i);
             if(found)
-                sendEmail("Graph found:", "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
+                sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
         } catch (Exception e) {
             e.printStackTrace();
         }
