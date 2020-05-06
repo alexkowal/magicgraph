@@ -9,6 +9,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 
 @Data
@@ -32,12 +33,12 @@ public class GraphTask implements Runnable {
         System.out.println(graph6String);
         try {
             Long k = 0l;
-            if (checkEdgesCount(graph1)) {
+            if (checkEdgesCount(graph1) && checkPossibleToCreatePermutation(graph1)) {
 //                    graph1.setMagicNumber(i);
                 boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
                         new ResearchResult(false, Lists.newArrayList()), k);
-            if(found)
-                sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
+                if (found)
+                    sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,5 +64,18 @@ public class GraphTask implements Runnable {
             mN = (4 * graph.getVertices().size() + 1) / 3;
         }
         return graph.getEdges().size() >= mN;
+    }
+
+    private boolean checkPossibleToCreatePermutation(Graph graph) {
+        int m = graph.getEdges().size();
+        if (m % 2 == 0) {
+            BigInteger a = new BigInteger(String.valueOf(m));
+            BigInteger b = new BigInteger(String.valueOf(graph.getVertices().size()));
+            BigInteger gcd = a.gcd(b);
+            long n1 = b.longValue() / gcd.longValue();
+            if (n1 % 2 == 0)
+                return false;
+        }
+        return true;
     }
 }
