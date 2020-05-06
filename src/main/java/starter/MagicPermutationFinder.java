@@ -45,7 +45,7 @@ public class MagicPermutationFinder {
     }
 
     public void readGraphsFromFileV2(InputStream is) throws Exception {
-        ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+        ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
             String graph6String;
             while (nonNull(graph6String = bufferedReader.readLine())) {

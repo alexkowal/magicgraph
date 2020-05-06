@@ -43,7 +43,7 @@ public class GraphUtilsV3 {
 
         Integer permutationSize = unmarkedEdges.size();
 
-        if (unmarkedEdges.size() > 5) {
+        if (unmarkedEdges.size() > 15) {
             generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration);
         } else {
             List<List<Integer>> permutations = generatePerms(possibleValues, permutationSize, recalculatedMagicNumber);
