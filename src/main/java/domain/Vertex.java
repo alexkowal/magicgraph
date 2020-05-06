@@ -17,7 +17,8 @@ public class Vertex {
     }
 
     @Override
-    public String toString(){
-        return (num+" , " + edges );
+    public String toString() {
+        return (num + " , " + edges);
 
-    }}
+    }
+}

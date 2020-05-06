@@ -31,11 +31,14 @@ public class GraphTask implements Runnable {
         }
         System.out.println(graph6String);
         try {
-            Long i = new Long(0);
-            boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
-                    new ResearchResult(false, Lists.newArrayList()), i);
+            Long k = 0l;
+            if (checkEdgesCount(graph1)) {
+//                    graph1.setMagicNumber(i);
+                boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
+                        new ResearchResult(false, Lists.newArrayList()), k);
             if(found)
                 sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,5 +50,18 @@ public class GraphTask implements Runnable {
         msg.setSubject(subject);
         msg.setText(message);
         javaMailSender.send(msg);
+    }
+
+    private boolean checkEdgesCount(Graph graph) {
+        int mod = graph.getVertices().size() % 3;
+        int mN = 0;
+        if (mod == 0) {
+            mN = 4 * graph.getVertices().size() / 3;
+        } else if (mod == 1) {
+            mN = (4 * graph.getVertices().size() + 5) / 3;
+        } else if (mod == 2) {
+            mN = (4 * graph.getVertices().size() + 1) / 3;
+        }
+        return graph.getEdges().size() >= mN;
     }
 }

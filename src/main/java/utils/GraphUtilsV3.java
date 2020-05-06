@@ -15,16 +15,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class GraphUtilsV3 {
 
     public static boolean generateAndCheck(Graph graph, int currentVertexNum, List<Integer> possibleValues,
                                            ResearchResult found, long iteration) throws Exception {
         if (found.getResult())
             return true;
-//        System.out.println(iteration);
         iteration++;
-        if (iteration > 15)
-            return false;
         for (int i = currentVertexNum; i < graph.getVertices().size(); i++) {
             graph.getVertices().get(i).getEdges().stream()
                     .forEach(edge -> edge.setMarked(false));
@@ -45,7 +43,7 @@ public class GraphUtilsV3 {
 
         Integer permutationSize = unmarkedEdges.size();
 
-        if (unmarkedEdges.size() > 15) {
+        if (unmarkedEdges.size() > 5) {
             generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration);
         } else {
             List<List<Integer>> permutations = generatePerms(possibleValues, permutationSize, recalculatedMagicNumber);
@@ -69,11 +67,11 @@ public class GraphUtilsV3 {
                     if (checkGraphIsMagic(graph)) {
                         found.setResult(true);
                         found.setEdgeList(graph.getEdges());
-//                    BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/aleksandr/magicgraph/src/main/java/files/" + graph.getName()));
-//                    bw.write(graph.getName());
-//                    bw.newLine();
-//                    bw.write(String.valueOf(graph.getEdges()));
-//                    bw.close();
+//                        BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/aleksandr/magicgraph/src/main/java/files/" + graph.getName()));
+//                        bw.write(graph.getName());
+//                        bw.newLine();
+//                        bw.write(String.valueOf(graph.getEdges()));
+//                        bw.close();
                         System.out.println(graph);
                         return true;
                     }
@@ -176,19 +174,19 @@ public class GraphUtilsV3 {
             return false;
         iteration++;
         int size = permSize;
-        List<List<Integer>> first = generatePerms2(values, size / 3)
+        List<List<Integer>> first = generatePermsForNonRecursiveSearch(values, size / 3)
                 .stream()
                 .filter(ar -> getSum(ar) < magicNumber)
                 .collect(Collectors.toList());
 
         size = size - size / 3;
-        List<List<Integer>> second = generatePerms2(values, size / 3 + 1)
+        List<List<Integer>> second = generatePermsForNonRecursiveSearch(values, size / 3 + 1)
                 .stream()
                 .filter(ar -> getSum(ar) < magicNumber)
                 .collect(Collectors.toList());
 
         size = permSize - first.get(0).size() - second.get(0).size();
-        List<List<Integer>> third = generatePerms2(values, size)
+        List<List<Integer>> third = generatePermsForNonRecursiveSearch(values, size)
                 .stream()
                 .filter(list -> getSum(list) < magicNumber)
                 .collect(Collectors.toList());
@@ -232,11 +230,11 @@ public class GraphUtilsV3 {
                     if (checkGraphIsMagic(graph)) {
                         found.setResult(true);
                         found.setEdgeList(graph.getEdges());
-//                    BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/aleksandr/magicgraph/src/main/java/files/" + graph.getName()));
-//                    bw.write(graph.getName());
-//                    bw.newLine();
-//                    bw.write(String.valueOf(graph.getEdges()));
-//                    bw.close();
+//                        BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/aleksandr/magicgraph/src/main/java/files/" + graph.getName()));
+//                        bw.write(graph.getName());
+//                        bw.newLine();
+//                        bw.write(String.valueOf(graph.getEdges()));
+//                        bw.close();
                         System.out.println(graph);
                         return true;
                     }
@@ -251,7 +249,7 @@ public class GraphUtilsV3 {
         return false;
     }
 
-    private static List<List<Integer>> generatePerms2(List<Integer> values, int size) {
+    private static List<List<Integer>> generatePermsForNonRecursiveSearch(List<Integer> values, int size) {
         List<List<Integer>> result = Lists.newArrayList();
         Generator.combination(values)
                 .simple(size)
