@@ -68,14 +68,6 @@ public class GraphUtils {
         return new ResearchResult(isMagic, graph.getEdges());
     }
 
-    private void v() {
-        Generator.partition(55)
-                .stream()
-                .filter(integers -> integers.size() == 4)
-                .filter(integers -> checkValuesUnique(integers))
-                .collect(Collectors.toList());
-    }
-
     private static boolean checkValuesUnique(List<Integer> v) {
         return v.size() == Sets.newHashSet(v).size();
     }

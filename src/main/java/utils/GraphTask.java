@@ -34,11 +34,10 @@ public class GraphTask implements Runnable {
         try {
             Long k = 0l;
             if (checkEdgesCount(graph1) && checkPossibleToCreatePermutation(graph1)) {
-//                    graph1.setMagicNumber(i);
                 boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
                         new ResearchResult(false, Lists.newArrayList()), k);
-                if (found)
-                    sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
+//                if (found)
+//                    sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
             }
         } catch (Exception e) {
             e.printStackTrace();
