@@ -42,7 +42,7 @@ public class GraphUtilsV3 {
 
             Integer permutationSize = unmarkedEdges.size();
 
-            if (unmarkedEdges.size() > 15) {
+            if (unmarkedEdges.size() > 4) {
                 generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration);
             } else {
                 List<List<Integer>> permutations = combinationSum2(possibleValues, recalculatedMagicNumber, permutationSize);
