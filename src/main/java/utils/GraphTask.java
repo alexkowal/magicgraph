@@ -41,7 +41,7 @@ public class GraphTask implements Runnable {
                 if (found) {
                     synchronized (totalCount) {
                         totalCount.incrementAndGet();
-                        System.out.println(totalCount);
+                        System.out.println("totalCount: " + totalCount);
                     }
                 }
 //                    sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
