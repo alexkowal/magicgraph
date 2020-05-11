@@ -8,12 +8,14 @@ import utils.GraphTask;
 import java.io.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 
 @Service
 public class MagicPermutationFinder {
     private JavaMailSender javaMailSender;
+    private AtomicInteger totalCount = new AtomicInteger(0);
 
     @Autowired
     public MagicPermutationFinder(JavaMailSender javaMailSender) {
@@ -49,7 +51,7 @@ public class MagicPermutationFinder {
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
             String graph6String;
             while (nonNull(graph6String = bufferedReader.readLine())) {
-                GraphTask task = new GraphTask(graph6String, javaMailSender);
+                GraphTask task = new GraphTask(graph6String, javaMailSender, totalCount);
                 executor.submit(task);
             }
         }
