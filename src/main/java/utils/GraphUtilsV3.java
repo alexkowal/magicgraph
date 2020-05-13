@@ -8,19 +8,25 @@ import domain.Vertex;
 import org.paukov.combinatorics3.Generator;
 import org.springframework.util.CollectionUtils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
 public class GraphUtilsV3 {
 
     public static boolean generateAndCheck(Graph graph, int currentVertexNum, List<Integer> possibleValues,
-                                           ResearchResult found, long iteration) throws Exception {
+                                           ResearchResult found, long iteration, AtomicInteger attempts) throws Exception {
         if (found.getResult())
             return true;
         iteration++;
+        attempts.incrementAndGet();
+        if (attempts.get() > 100000)
+            return false;
         for (int i = currentVertexNum; i < graph.getVertices().size(); i++) {
             graph.getVertices().get(i).getEdges().stream()
                     .forEach(edge -> edge.setMarked(false));
@@ -42,8 +48,8 @@ public class GraphUtilsV3 {
 
             Integer permutationSize = unmarkedEdges.size();
 
-            if (unmarkedEdges.size() > 4) {
-                generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration);
+            if (unmarkedEdges.size() > 8) {
+                generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration, attempts);
             } else {
                 List<List<Integer>> permutations = combinationSum2(possibleValues, recalculatedMagicNumber, permutationSize);
                 Collections.shuffle(permutations);
@@ -76,7 +82,7 @@ public class GraphUtilsV3 {
                         }
                         if (found.getResult())
                             break;
-                        generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, iteration);
+                        generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, iteration, attempts);
                     }
                 }
             }
@@ -214,9 +220,11 @@ public class GraphUtilsV3 {
     }
 
     private static boolean generation(List<Integer> possibleValues, Integer magicNumber, Integer permSize, ResearchResult found,
-                                      Integer currentVertexNum, List<Edge> unmarkedEdges, Graph graph, long iteration) throws Exception {
+                                      Integer currentVertexNum, List<Edge> unmarkedEdges, Graph graph, long iteration, AtomicInteger attempts) throws Exception {
         List<Integer> values = Lists.newArrayList(possibleValues);
         if (iteration > 15)
+            return false;
+        if (attempts.get() > 100000)
             return false;
         iteration++;
         int size = permSize;
@@ -286,7 +294,7 @@ public class GraphUtilsV3 {
                     }
                     if (found.getResult())
                         break;
-                    generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, iteration);
+                    generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, iteration, attempts);
                 }
                 tempValues.removeAll(filteredSecond.get(j));
 

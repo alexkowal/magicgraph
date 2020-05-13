@@ -19,7 +19,7 @@ public class GraphTask implements Runnable {
     private String graph6String;
     private JavaMailSender javaMailSender;
     private AtomicInteger totalCount;
-
+    private AtomicInteger attempts;
     @Override
     public void run() {
         Graph graph1 = null;
@@ -37,7 +37,7 @@ public class GraphTask implements Runnable {
             Long k = 0l;
             if (checkEdgesCount(graph1) && checkPossibleToCreatePermutation(graph1)) {
                 boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
-                        new ResearchResult(false, Lists.newArrayList()), k);
+                        new ResearchResult(false, Lists.newArrayList()), k, new AtomicInteger(0));
                 if (found) {
                     synchronized (totalCount) {
                         totalCount.incrementAndGet();

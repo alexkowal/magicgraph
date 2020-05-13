@@ -51,7 +51,7 @@ public class MagicPermutationFinder {
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
             String graph6String;
             while (nonNull(graph6String = bufferedReader.readLine())) {
-                GraphTask task = new GraphTask(graph6String, javaMailSender, totalCount);
+                GraphTask task = new GraphTask(graph6String, javaMailSender, totalCount, new AtomicInteger(0));
                 executor.submit(task);
             }
         }

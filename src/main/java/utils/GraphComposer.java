@@ -48,7 +48,7 @@ public class GraphComposer {
     }
 
     public void v() throws IOException {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("/Users/aleksandr/Desktop/graph/10.txt"))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("/Users/aleksandr/Desktop/graph/9.txt"))) {
             String graph6String;
             Long l = System.currentTimeMillis();
 
