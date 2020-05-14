@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 public class GraphUtilsV3 {
-    private static int totalAttempst = 1000000;
+    private static int totalAttempst = 30000;
 
     public static boolean generateAndCheck(Graph graph, int currentVertexNum, List<Integer> possibleValues,
                                            ResearchResult found, long iteration, AtomicInteger attempts) throws Exception {
