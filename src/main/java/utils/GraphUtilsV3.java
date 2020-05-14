@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 
 public class GraphUtilsV3 {
+    private static int totalAttempst = 100000;
 
     public static boolean generateAndCheck(Graph graph, int currentVertexNum, List<Integer> possibleValues,
                                            ResearchResult found, long iteration, AtomicInteger attempts) throws Exception {
@@ -25,8 +26,10 @@ public class GraphUtilsV3 {
             return true;
         iteration++;
         attempts.incrementAndGet();
-        if (attempts.get() > 100000)
+        if (attempts.get() > totalAttempst) {
+//            System.out.println(totalAttempst);
             return false;
+        }
         for (int i = currentVertexNum; i < graph.getVertices().size(); i++) {
             graph.getVertices().get(i).getEdges().stream()
                     .forEach(edge -> edge.setMarked(false));
@@ -48,7 +51,7 @@ public class GraphUtilsV3 {
 
             Integer permutationSize = unmarkedEdges.size();
 
-            if (unmarkedEdges.size() > 8) {
+            if (unmarkedEdges.size() > 15) {
                 generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration, attempts);
             } else {
                 List<List<Integer>> permutations = combinationSum2(possibleValues, recalculatedMagicNumber, permutationSize);
@@ -224,8 +227,10 @@ public class GraphUtilsV3 {
         List<Integer> values = Lists.newArrayList(possibleValues);
         if (iteration > 15)
             return false;
-        if (attempts.get() > 100000)
+        if (attempts.get() > totalAttempst) {
+//            System.out.println(totalAttempst);
             return false;
+        }
         iteration++;
         int size = permSize;
         List<List<Integer>> first = generatePermsForNonRecursiveSearch(values, size / 3)

@@ -15,7 +15,7 @@ public class GraphStarter {
 
     public static void main(String[] args) throws Exception {
 
-        ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5);
+        ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader("/Users/aleksandr/magicgraph/src/main/java/files/graph6.txt"))) {
             String graph6String;

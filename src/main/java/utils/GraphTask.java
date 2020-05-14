@@ -20,6 +20,7 @@ public class GraphTask implements Runnable {
     private JavaMailSender javaMailSender;
     private AtomicInteger totalCount;
     private AtomicInteger attempts;
+
     @Override
     public void run() {
         Graph graph1 = null;
@@ -42,9 +43,14 @@ public class GraphTask implements Runnable {
                     synchronized (totalCount) {
                         totalCount.incrementAndGet();
                         System.out.println("totalCount: " + totalCount);
+                        if (totalCount.get() % 100 == 0) {
+                            sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges() + "\n"
+                                    + totalCount.get());
+                        }
                     }
+                } else {
+                    System.out.println("not found " + graph6String);
                 }
-//                    sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges());
             }
         } catch (Exception e) {
             e.printStackTrace();
