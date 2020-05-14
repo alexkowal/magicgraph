@@ -5,92 +5,104 @@ import domain.Edge;
 import domain.Graph;
 import domain.ResearchResult;
 import domain.Vertex;
+import lombok.extern.slf4j.Slf4j;
 import org.paukov.combinatorics3.Generator;
 import org.springframework.util.CollectionUtils;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 public class GraphUtilsV3 {
-    private static int totalAttempst = 30000;
+    private static int totalAttempts = 30000;
 
     public static boolean generateAndCheck(Graph graph, int currentVertexNum, List<Integer> possibleValues,
-                                           ResearchResult found, long iteration, AtomicInteger attempts) throws Exception {
+                                           ResearchResult found, AtomicBoolean finished, AtomicInteger attempts) throws Exception {
         if (found.getResult())
             return true;
-        iteration++;
+
         attempts.incrementAndGet();
-        if (attempts.get() > totalAttempst) {
-//            System.out.println(totalAttempst);
+        if (attempts.get() > totalAttempts) {
             return false;
         }
-        for (int i = currentVertexNum; i < graph.getVertices().size(); i++) {
-            graph.getVertices().get(i).getEdges().stream()
-                    .forEach(edge -> edge.setMarked(false));
-        }
+        if (!finished.get()) {
+            for (int i = currentVertexNum; i < graph.getVertices().size(); i++) {
+                graph.getVertices().get(i).getEdges()
+                        .forEach(edge -> edge.setMarked(false));
+            }
 
-        for (int i = 0; i < currentVertexNum; i++) {
-            graph.getVertices().get(i).getEdges().stream()
-                    .forEach(edge -> edge.setMarked(true));
-        }
-        if (currentVertexNum < graph.getVertices().size()) {
+            for (int i = 0; i < currentVertexNum; i++) {
+                graph.getVertices().get(i).getEdges()
+                        .forEach(edge -> edge.setMarked(true));
+            }
+            if (currentVertexNum < graph.getVertices().size()) {
 
-            Vertex vertex = graph.getVertices().get(currentVertexNum);
-            List<Edge> unmarkedEdges = vertex.getEdges()
-                    .stream()
-                    .filter(edge -> !edge.isMarked())
-                    .collect(Collectors.toList());
+                Vertex vertex = graph.getVertices().get(currentVertexNum);
+                List<Edge> unmarkedEdges = vertex.getEdges()
+                        .stream()
+                        .filter(edge -> !edge.isMarked())
+                        .collect(Collectors.toList());
 
-            Integer recalculatedMagicNumber = graph.getMagicNumber() - calculateCurrentSumForVertex(vertex);
+                Integer recalculatedMagicNumber = graph.getMagicNumber() - calculateCurrentSumForVertex(vertex);
 
-            Integer permutationSize = unmarkedEdges.size();
+                Integer permutationSize = unmarkedEdges.size();
 
-            if (unmarkedEdges.size() > 3) {
-                generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration, attempts);
-            } else {
-                List<List<Integer>> permutations = combinationSum2(possibleValues, recalculatedMagicNumber, permutationSize);
-                Collections.shuffle(permutations);
-                vertex.setPermutations(permutations);
+                if (unmarkedEdges.size() > 3) {
+                    boolean res = generation(possibleValues, recalculatedMagicNumber, permutationSize, found,
+                            currentVertexNum, unmarkedEdges, graph, finished, attempts);
+                    if (res) {
+                        found.setResult(true);
+                        finished.set(true);
+                        return true;
+                    }
+                } else {
+                    List<List<Integer>> permutations = combinationSum2(possibleValues, recalculatedMagicNumber, permutationSize);
+                    Collections.shuffle(permutations);
+                    vertex.setPermutations(permutations);
 
-                for (int i = 0; i < permutations.size(); i++) {
-                    if (!found.getResult()) {
-                        List<Integer> permutation = permutations.get(i);
-                        List<Integer> copyOfPossibleValues = Lists.newArrayList(possibleValues);
-                        copyOfPossibleValues = copyOfPossibleValues.stream()
-                                .filter(value -> !permutation.contains(value))
-                                .collect(Collectors.toList());
+                    if (finished.get())
+                        return true;
 
-                        for (int j = 0; j < permutation.size(); j++) {
-                            Edge edge = unmarkedEdges.get(j);
-                            edge.setMarked(true);
-                            edge.setWeight(permutation.get(j));
-                        }
-
-                        if (checkGraphIsMagic(graph)) {
-                            found.setResult(true);
-                            found.setEdgeList(graph.getEdges());
-//                            BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/aleksandr/magicgraph/src/main/java/files/" + graph.getName()));
-//                            bw.write(graph.getName());
-//                            bw.newLine();
-//                            bw.write(String.valueOf(graph.getEdges()));
-//                            bw.close();
-                            System.out.println(graph);
-                            return true;
-                        }
+                    for (int i = 0; i < permutations.size(); i++) {
                         if (found.getResult())
                             break;
-                        generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, iteration, attempts);
+                        if (!found.getResult()) {
+                            List<Integer> permutation = permutations.get(i);
+                            List<Integer> copyOfPossibleValues = Lists.newArrayList(possibleValues);
+                            copyOfPossibleValues = copyOfPossibleValues.stream()
+                                    .filter(value -> !permutation.contains(value))
+                                    .collect(Collectors.toList());
+
+                            for (int j = 0; j < permutation.size(); j++) {
+                                Edge edge = unmarkedEdges.get(j);
+                                edge.setMarked(true);
+                                edge.setWeight(permutation.get(j));
+                            }
+
+                            if (checkGraphIsMagic(graph)) {
+                                found.setResult(true);
+                                found.setEdgeList(graph.getEdges());
+                                finished.set(true);
+                                System.out.println(graph);
+                                return true;
+                            }
+                            if (found.getResult())
+                                break;
+                            boolean res = generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, finished, attempts);
+                            if (res) {
+                                found.setResult(true);
+                                finished.set(true);
+                                return true;
+                            }
+                        }
                     }
                 }
             }
         }
-
         return found.getResult();
     }
 
@@ -113,52 +125,6 @@ public class GraphUtilsV3 {
                         .simple()
                         .forEach(result::add));
         return result;
-    }
-
-    static void sumUpRecursive(List<Integer> numbers, int target,
-                               ArrayList<Integer> partial,
-                               List<List<Integer>> res,
-                               int permSize) {
-        int s = 0;
-        if (partial.size() > permSize)
-            return;
-        for (int x : partial) s += x;
-        if (s == target) {
-            if (partial.size() == permSize)
-                res.add(partial);
-        }
-        if (s >= target)
-            return;
-        for (int i = 0; i < numbers.size(); i++) {
-            List<Integer> remaining = new ArrayList<Integer>();
-            int n = numbers.get(i);
-            for (int j = i + 1; j < numbers.size(); j++) remaining.add(numbers.get(j));
-            ArrayList<Integer> partialRec = new ArrayList<>(partial);
-            partialRec.add(n);
-            remaining = remaining.stream()
-                    .filter(dig -> dig <= target - getCurrentSum(partialRec))
-                    .collect(Collectors.toList());
-            sumUpRecursive(remaining, target, partialRec, res, permSize);
-        }
-    }
-
-    static int getCurrentSum(List<Integer> values) {
-        int sum = 0;
-        for (int i = 0; i < values.size(); i++) {
-            sum += values.get(i);
-
-        }
-        return sum;
-    }
-
-    private static List<List<Integer>> generatePermsRecursive(List<Integer> numbers, int target, int permSize) {
-        List<List<Integer>> res = Lists.newArrayList();
-        List<List<Integer>> finalRes = Lists.newArrayList();
-        sumUpRecursive(numbers, target, new ArrayList<>(), res, permSize);
-        res.forEach(perm -> finalRes.addAll(permuteCombination(perm)));
-        if (finalRes.size() > 1000)
-            System.out.println(finalRes.size());
-        return finalRes;
     }
 
     private static List<List<Integer>> permuteCombination(List<Integer> numbers) {
@@ -223,38 +189,40 @@ public class GraphUtilsV3 {
     }
 
     private static boolean generation(List<Integer> possibleValues, Integer magicNumber, Integer permSize, ResearchResult found,
-                                      Integer currentVertexNum, List<Edge> unmarkedEdges, Graph graph, long iteration, AtomicInteger attempts) throws Exception {
-        List<Integer> values = Lists.newArrayList(possibleValues);
-        if (attempts.get() > totalAttempst) {
-//            System.out.println(totalAttempst);
+                                      Integer currentVertexNum, List<Edge> unmarkedEdges, Graph graph, AtomicBoolean finished, AtomicInteger attempts) throws Exception {
+        if (attempts.get() > totalAttempts) {
+            found.setResult(false);
             return false;
         }
-        iteration++;
-        int size = permSize;
-        List<List<Integer>> first = generatePermsForNonRecursiveSearch(values, size / 3)
-                .stream()
-                .filter(ar -> getSum(ar) < magicNumber)
-                .collect(Collectors.toList());
+        if (finished.get()) {
+            return true;
+        }
 
-        if(first.isEmpty())
+        List<Integer> values = Lists.newArrayList(possibleValues);
+
+        if (found.getResult()) {
+            finished.set(true);
+            return true;
+        }
+
+        int size = permSize;
+        List<List<Integer>> first = new ArrayList<>(generatePermsForNonRecursiveSearch(values, size / 3, magicNumber));
+
+        if (first.isEmpty()) {
             return false;
+        }
 
         size = size - size / 3;
-        List<List<Integer>> second = generatePermsForNonRecursiveSearch(values, size / 3 + 1)
-                .stream()
-                .filter(ar -> getSum(ar) < magicNumber)
-                .collect(Collectors.toList());
+        List<List<Integer>> second = new ArrayList<>(generatePermsForNonRecursiveSearch(values, size / 3 + 1, magicNumber));
 
-        if(second.isEmpty())
+        if (second.isEmpty()) {
             return false;
+        }
 
         size = permSize - first.get(0).size() - second.get(0).size();
-        List<List<Integer>> third = generatePermsForNonRecursiveSearch(values, size)
-                .stream()
-                .filter(list -> getSum(list) < magicNumber)
-                .collect(Collectors.toList());
+        List<List<Integer>> third = new ArrayList<>(generatePermsForNonRecursiveSearch(values, size, magicNumber));
 
-        if(third.isEmpty())
+        if (third.isEmpty())
             return false;
 
         Collections.shuffle(first);
@@ -271,9 +239,10 @@ public class GraphUtilsV3 {
             for (int j = 0; j < filteredSecond.size(); j++) {
                 tempValues.addAll(filteredSecond.get(j));
 
+                int tempSum = getSum(tempValues);
                 List<List<Integer>> last = third.stream()
                         .filter(ar -> !CollectionUtils.containsAny(ar, tempValues))
-                        .filter(ar -> checkSum(ar, magicNumber - getSum(tempValues)))
+                        .filter(ar -> checkSum(ar, magicNumber - tempSum))
                         .collect(Collectors.toList());
 
                 for (int cc = 0; cc < last.size(); cc++) {
@@ -296,30 +265,29 @@ public class GraphUtilsV3 {
                     if (checkGraphIsMagic(graph)) {
                         found.setResult(true);
                         found.setEdgeList(graph.getEdges());
-//                        BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/aleksandr/magicgraph/src/main/java/files/" + graph.getName()));
-//                        bw.write(graph.getName());
-//                        bw.newLine();
-//                        bw.write(String.valueOf(graph.getEdges()));
-//                        bw.close();
+                        finished.set(true);
                         System.out.println(graph);
                         return true;
                     }
-                    if (found.getResult())
+                    if (found.getResult()) {
                         break;
-                    generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, iteration, attempts);
+                    }
+                    boolean f = generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, finished, attempts);
+                if(f)
+                    return true;
                 }
                 tempValues.removeAll(filteredSecond.get(j));
-
             }
         }
         return false;
     }
 
-    private static List<List<Integer>> generatePermsForNonRecursiveSearch(List<Integer> values, int size) {
+    private static List<List<Integer>> generatePermsForNonRecursiveSearch(List<Integer> values, int size, int magicNumber) {
         List<List<Integer>> result = Lists.newArrayList();
         Generator.combination(values)
                 .simple(size)
                 .stream()
+                .filter(ar -> getSum(ar) < magicNumber)
                 .forEach(combination -> Generator.permutation(combination)
                         .simple()
                         .forEach(result::add));
@@ -365,3 +333,4 @@ public class GraphUtilsV3 {
     }
 
 }
+

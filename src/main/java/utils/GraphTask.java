@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
@@ -38,16 +39,14 @@ public class GraphTask implements Runnable {
             Long k = 0l;
             if (checkEdgesCount(graph1) && checkPossibleToCreatePermutation(graph1)) {
                 boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
-                        new ResearchResult(false, Lists.newArrayList()), k, new AtomicInteger(0));
+                        new ResearchResult(false, Lists.newArrayList()), new AtomicBoolean(false), new AtomicInteger(0));
                 if (found) {
-                    synchronized (totalCount) {
-                        totalCount.incrementAndGet();
-                        System.out.println("totalCount: " + totalCount);
-                        if (totalCount.get() % 100 == 0) {
-                            sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges() + "\n"
-                                    + totalCount.get());
-                        }
-                    }
+                    totalCount.incrementAndGet();
+                    System.out.println("totalCount: " + totalCount);
+//                        if (totalCount.get() % 100 == 0) {
+//                            sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges() + "\n"
+//                                    + totalCount.get());
+//                        }
                 } else {
                     System.out.println("not found " + graph6String);
                 }
