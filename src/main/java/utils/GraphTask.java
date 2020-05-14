@@ -43,10 +43,10 @@ public class GraphTask implements Runnable {
                 if (found) {
                     totalCount.incrementAndGet();
                     System.out.println("totalCount: " + totalCount);
-//                        if (totalCount.get() % 100 == 0) {
-//                            sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges() + "\n"
-//                                    + totalCount.get());
-//                        }
+                        if (totalCount.get() % 100 == 0) {
+                            sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges() + "\n"
+                                    + totalCount.get());
+                        }
                 } else {
                     System.out.println("not found " + graph6String);
                 }
