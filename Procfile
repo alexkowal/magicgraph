@@ -1,1 +1,1 @@
-web: java -jar target/magic-graph-1.0-SNAPSHOT.jar
+web: java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -jar target/magic-graph-1.0-SNAPSHOT.jar
