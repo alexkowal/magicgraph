@@ -1,0 +1,1 @@
+web: java -Xmx256m -Xss512k -XX:MetaspaceSize=100M
