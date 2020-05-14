@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 public class GraphUtilsV3 {
-    private static int totalAttempst = 100000;
+    private static int totalAttempst = 1000000;
 
     public static boolean generateAndCheck(Graph graph, int currentVertexNum, List<Integer> possibleValues,
                                            ResearchResult found, long iteration, AtomicInteger attempts) throws Exception {
@@ -51,7 +51,7 @@ public class GraphUtilsV3 {
 
             Integer permutationSize = unmarkedEdges.size();
 
-            if (unmarkedEdges.size() > 15) {
+            if (unmarkedEdges.size() > 3) {
                 generation(possibleValues, recalculatedMagicNumber, permutationSize, found, currentVertexNum, unmarkedEdges, graph, iteration, attempts);
             } else {
                 List<List<Integer>> permutations = combinationSum2(possibleValues, recalculatedMagicNumber, permutationSize);
@@ -225,8 +225,6 @@ public class GraphUtilsV3 {
     private static boolean generation(List<Integer> possibleValues, Integer magicNumber, Integer permSize, ResearchResult found,
                                       Integer currentVertexNum, List<Edge> unmarkedEdges, Graph graph, long iteration, AtomicInteger attempts) throws Exception {
         List<Integer> values = Lists.newArrayList(possibleValues);
-        if (iteration > 15)
-            return false;
         if (attempts.get() > totalAttempst) {
 //            System.out.println(totalAttempst);
             return false;
@@ -238,17 +236,26 @@ public class GraphUtilsV3 {
                 .filter(ar -> getSum(ar) < magicNumber)
                 .collect(Collectors.toList());
 
+        if(first.isEmpty())
+            return false;
+
         size = size - size / 3;
         List<List<Integer>> second = generatePermsForNonRecursiveSearch(values, size / 3 + 1)
                 .stream()
                 .filter(ar -> getSum(ar) < magicNumber)
                 .collect(Collectors.toList());
 
+        if(second.isEmpty())
+            return false;
+
         size = permSize - first.get(0).size() - second.get(0).size();
         List<List<Integer>> third = generatePermsForNonRecursiveSearch(values, size)
                 .stream()
                 .filter(list -> getSum(list) < magicNumber)
                 .collect(Collectors.toList());
+
+        if(third.isEmpty())
+            return false;
 
         Collections.shuffle(first);
         Collections.shuffle(second);
