@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.paukov.combinatorics3.Generator;
 import org.springframework.util.CollectionUtils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class GraphUtilsV3 {
-    private static int totalAttempts = 30000;
 
     public static boolean generateAndCheck(Graph graph, int currentVertexNum, List<Integer> possibleValues,
                                            ResearchResult found, AtomicBoolean finished, AtomicInteger attempts) throws Exception {
@@ -26,9 +27,6 @@ public class GraphUtilsV3 {
             return true;
 
         attempts.incrementAndGet();
-        if (attempts.get() > totalAttempts) {
-            return false;
-        }
         if (!finished.get()) {
             for (int i = currentVertexNum; i < graph.getVertices().size(); i++) {
                 graph.getVertices().get(i).getEdges()
@@ -51,7 +49,7 @@ public class GraphUtilsV3 {
 
                 Integer permutationSize = unmarkedEdges.size();
 
-                if (unmarkedEdges.size() > 3) {
+                if (unmarkedEdges.size() > 20) {
                     boolean res = generation(possibleValues, recalculatedMagicNumber, permutationSize, found,
                             currentVertexNum, unmarkedEdges, graph, finished, attempts);
                     if (res) {
@@ -87,7 +85,10 @@ public class GraphUtilsV3 {
                                 found.setResult(true);
                                 found.setEdgeList(graph.getEdges());
                                 finished.set(true);
-                                System.out.println(graph);
+                                log.info(graph.toString());
+                                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/aleksandr/magicgraph/src/main/java/files/" + graph.getName() + ".txt"));
+                                bw.write(graph.getEdges().toString());
+                                bw.close();
                                 return true;
                             }
                             if (found.getResult())
@@ -190,10 +191,6 @@ public class GraphUtilsV3 {
 
     private static boolean generation(List<Integer> possibleValues, Integer magicNumber, Integer permSize, ResearchResult found,
                                       Integer currentVertexNum, List<Edge> unmarkedEdges, Graph graph, AtomicBoolean finished, AtomicInteger attempts) throws Exception {
-        if (attempts.get() > totalAttempts) {
-            found.setResult(false);
-            return false;
-        }
         if (finished.get()) {
             return true;
         }
@@ -266,15 +263,15 @@ public class GraphUtilsV3 {
                         found.setResult(true);
                         found.setEdgeList(graph.getEdges());
                         finished.set(true);
-                        System.out.println(graph);
+                        log.info(graph.toString());
                         return true;
                     }
                     if (found.getResult()) {
                         break;
                     }
                     boolean f = generateAndCheck(graph, currentVertexNum + 1, copyOfPossibleValues, found, finished, attempts);
-                if(f)
-                    return true;
+                    if (f)
+                        return true;
                 }
                 tempValues.removeAll(filteredSecond.get(j));
             }
@@ -324,7 +321,7 @@ public class GraphUtilsV3 {
         else {
             for (int i = start; i < nums.size(); i++) {
                 if (i > start && nums.get(i) == nums.get(i - 1))
-                    continue; // skip duplicates
+                    continue;
                 tempList.add(nums.get(i));
                 backtrack(list, tempList, nums, permutationSize, remain - nums.get(i), i + 1);
                 tempList.remove(tempList.size() - 1);

@@ -36,16 +36,15 @@ public class GraphTask implements Runnable {
         }
         System.out.println(graph6String);
         try {
-            Long k = 0l;
             if (checkEdgesCount(graph1) && checkPossibleToCreatePermutation(graph1)) {
                 boolean found = GraphUtilsV3.generateAndCheck(graph1, 0, possibleValues,
                         new ResearchResult(false, Lists.newArrayList()), new AtomicBoolean(false), new AtomicInteger(0));
                 if (found) {
                     totalCount.incrementAndGet();
                     System.out.println("totalCount: " + totalCount);
-                        if (totalCount.get() % 100 == 0) {
+                        if (totalCount.get() % 1000 == 0) {
                             sendEmail("Graph found - " + graph6String.charAt(0), "Permutation for Graph found: " + graph6String + " " + graph1.getEdges() + "\n"
-                                    + totalCount.get());
+                                    + totalCount.get() + "\n" + attempts.get());
                         }
                 } else {
                     System.out.println("not found " + graph6String);
@@ -58,7 +57,7 @@ public class GraphTask implements Runnable {
 
     private void sendEmail(String subject, String message) {
         SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo("alexkowalkowale@gmail.com");
+        msg.setTo("****");
         msg.setSubject(subject);
         msg.setText(message);
         javaMailSender.send(msg);
